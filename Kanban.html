@@ -8,10 +8,10 @@
           integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <link href="./css/style.css" rel="stylesheet">
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script type="module" src="./js/projects.js"></script>
-    <!-- jsDelivr :: Sortable :: Latest (https://www.jsdelivr.com/package/npm/sortablejs) -->
+    <!-- <script type="module" src="./js/projects.js"></script> -->
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
-<script src="./js/task.js" type="module"></script>
+<script src="./js/dragndrop.js" type="module"></script>
+<script src="./js/getTask.js" type="module"></script>
 </head>
 <body>
 <header>
@@ -26,18 +26,17 @@
           <button class="btn btn-primary m-5">add task</button>
         </div>
       </div>
-      <div class="row text-center g-2">
-        <div class="col-3 border border-dark h-25 d-inline-block"  id="example2Left">
+      <div id="row" class="row text-center g-2">
+        <!-- <div class="col-3 border border-dark h-25 d-inline-block"  id="example2Left">
           <h4>To do</h4>
           <div id="todo" class="sortable-ghost">
             <div class="card" style="width: 18rem;">
+             
               <div class="card-body">
                 <h5 class="card-title">Card title1</h5>
-                <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                <a href="#" class="card-link">Card link</a>
-                <a href="#" class="card-link">Another link</a>
+                
               </div>
+
             </div>
             <div class="card" style="width: 18rem;">
               <div class="card-body">
@@ -97,7 +96,7 @@
         <div class="col-3 border border-secondary">
           <h4>Fin</h4>
         </div>
-      </div>
+      </div> -->
     </div>
 </main>
 <footer class=" top-100 start-50 translate-middle">
