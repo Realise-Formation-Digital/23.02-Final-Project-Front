@@ -1,9 +1,6 @@
 //importation de notre url
 import { API_BASE_URL } from "../constants/constants.js";
 
-// let totalTask = "";
-// let allTitle = "";
-// let projectId = "";
 
 async function getTasks() {
     try {
