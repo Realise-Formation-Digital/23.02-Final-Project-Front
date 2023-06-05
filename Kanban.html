@@ -1,74 +1,58 @@
 <!doctype html>
-<html lang="en">
+<html lang="fr">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>kanban</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" integrity="sha512-mSYUmp1HYZDFaVKK//63EcZq4iFWFjxSL+Z3T/aCt4IO9Cejm03q3NKKYN6pFQzY0SBOr8h+eCIAZHPXcpZaNw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-  <script type="module" src="./js/addProject.js"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Kanban</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <link href="./css/style.css" rel="stylesheet">
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script type="module" src="./js/projects.js"></script>
+    <!-- jsDelivr :: Sortable :: Latest (https://www.jsdelivr.com/package/npm/sortablejs) -->
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+<script src="./js/task.js" type="module"></script>
 </head>
 <body>
-<div class="container">
-  <h1 class="mt-4" id="title"></h1>
-
-  <form id="sendBeerForm">
-    <!-- success and errors messages -->
-    <div id="successMessage" role="alert"></div>
-    <div id="errorMessage" role="alert"></div>
-
-    <!-- input -->
-    <div class="mb-3">
-      <label for="name"class="form-label">Nom</label>
-      <input type="text" class="form-control" id="name">
-    </div>
-    <div class="mb-3">
-      <label for="tagline" class="form-label">Tagline</label>
-      <input type="text" class="form-control" id="tagline">
-    </div>
-    <div class="mb-3">
-      <label for="firstBrewed" class="form-label">First Brewed</label>
-      <input type="text" class="form-control" id="firstBrewed" data-provide="datepicker">
-    </div>
-    <div class="mb-3">
-      <label for="description" class="form-label">Description</label>
-      <textarea class="form-control" id="description"></textarea>
-    </div>
-    <div class="mb-3">
-      <label for="imageUrl" class="form-label">Url de l'image</label>
-      <input type="text" class="form-control" id="imageUrl">
-    </div>
-    <div class="mb-3">
-      <label for="brewersTips" class="form-label">Brewers tips</label>
-      <input type="text" class="form-control" id="brewersTips">
-    </div>
-    <div class="mb-3">
-      <label for="contributedBy" class="form-label">Contributed by</label>
-      <input type="text" class="form-control" id="contributedBy">
-    </div>
-    <div class="mb-3">
-      <label for="foodPairing1" class="form-label">Food pairing 1</label>
-      <input type="text" class="form-control" id="foodPairing1">
-    </div>
-    <div class="mb-3">
-      <label for="foodPairing2" class="form-label">Food pairing 2</label>
-      <input type="text" class="form-control" id="foodPairing2">
-    </div>
-    <div class="mb-3">
-      <label for="foodPairing3" class="form-label">Food pairing 3</label>
-      <input type="text" class="form-control" id="foodPairing3">
-    </div>
-
-    <!-- submit button -->
-    <button type="button" id="submitBeer" class="btn btn-primary">Soumettre</button>
-  </form>
-    <!-- retourner ver la liste des projets -->
-  <form class="mt-5 mb-5" action="./index.html">
-    <button type="submit" class="btn btn-primary" >Retourner à la liste </button>
-  </form>
+<header>
+<div class="logo container">
+    <img src="./Photos/logo3-realise.png" class="" alt="le logo de realise">
 </div>
+</header>
+  <main>
+    <div class="container">
+      <div class="row">
+        <div class="col">
+          <button class="btn btn-primary m-5">add task</button>
+        </div>
+      </div>
+      <div class="row text-center g-2">
+        <div class="col-3 border border-dark h-25 d-inline-block" id="example2Left">
+          <h4>To do</h4>
+          <ul id="items">
+            <li>item 1</li>
+            <li>item 2</li>
+            <li>item 3</li>
+          </ul>
+        </div>
+        <div class="col-3 border border-secondary" id="example2Right">
+          <h4>In progres</h4>
+          <ul id="items">
+            
+          </ul>
+        </div>
+        <div class="col-3 border border-secondary">
+          <h4>Valid</h4>
+        </div>
+        <div class="col-3 border border-secondary">
+          <h4>Fin</h4>
+        </div>
+      </div>
+    </div>
+</main>
+<footer class="position-absolute top-100 start-50 translate-middle">
+    <img src="./Photos/Screenshot_from_2023-06-05_09-50-00.png"  alt="footer de realise">
+</footer>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
         crossorigin="anonymous"></script>
