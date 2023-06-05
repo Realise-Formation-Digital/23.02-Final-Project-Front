@@ -8,7 +8,7 @@ import { API_BASE_URL } from "../constants/constants.js";
 async function getTasks() {
     try {
 
-        const reponse = await axios.get(API_BASE_URL + 'projects/3')
+        const reponse = await axios.get(API_BASE_URL + 'projects/:id')
 
         console.log(reponse)
         const kanban = reponse.data
