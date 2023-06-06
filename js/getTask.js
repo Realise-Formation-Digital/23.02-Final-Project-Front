@@ -1,18 +1,17 @@
 //importation de notre url
 import { API_BASE_URL } from "../constants/constants.js";
 
-
+//Création de la function asyncrone getTasks qui va renvoyer l ensemble des taches lié à un projet
 async function getTasks() {
     try {
-
+        //attente de la le requette http get projects by id
         const reponse = await axios.get(API_BASE_URL + 'projects/:id')
-
-        console.log(reponse)
+        // stockage de la valeur .data qui va recevoir toute une partie des données de reponse
         const kanban = reponse.data
-
+        // stockage de la div avec l id row dans row nous la sortons de la boucle car elle sera l element parent
         let row = document.querySelector('#row')
 
-
+        // creation d'ue boucle qui va venir parcourir tout les données de kanban mais la partie nomé status_columns
         for (let column of kanban.status_columns) {
 
             let col = document.createElement('div')
