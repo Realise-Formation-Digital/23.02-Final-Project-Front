@@ -27,14 +27,23 @@ async function getProjects() {
 
         // add pagination elements
         //paginationEl();
-        //paginationProjectsListener();
+        //paginationProjectsListener();()
 
         for (let project of projectList) {
+            
+           
             const block = document.createElement("li");
             block.setAttribute('id', project.id);
             block.classList.add("list-group-item");
             block.classList.add('list-group-item-action');
+          
             projectListEl.appendChild(block);
+            
+            block.addEventListener ('click',function(evt){
+                console.log (evt.target.getAttribute('id'))
+                window.open("http://127.0.0.1:5500/Kanban.html?kanban_id=" + evt.target.getAttribute('id'),"_blank")
+
+            })
           
             const h3 = document.createElement("h3");
             h3.innerText = project.title;

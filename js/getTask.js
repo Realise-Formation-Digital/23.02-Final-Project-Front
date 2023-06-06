@@ -5,9 +5,15 @@ import { API_BASE_URL } from "../constants/constants.js";
 async function getTasks() {
     try {
 
-        const reponse = await axios.get(API_BASE_URL + 'projects/:id')
+//
+        const queryString = window.location.search;
+        console.log(queryString);
+        const urlParams = new URLSearchParams(queryString);
+        const kanban_id = urlParams.get('kanban_id')
+        console.log('Kanban ID', kanban_id)
 
-        console.log(reponse)
+        const reponse = await axios.get(API_BASE_URL + 'projects/' + kanban_id)
+
         const kanban = reponse.data
 
         let row = document.querySelector('#row')
@@ -22,7 +28,6 @@ async function getTasks() {
             h4.innerText = column.title
             col.appendChild(h4)
             row.appendChild(col)
-            console.log(column.tasks)
             Sortable.create(col, {
                 group: "test",
                 animation: 150,
@@ -45,8 +50,6 @@ async function getTasks() {
             });
 
             for (let tasks of column.tasks) {
-                console.log('caio')
-                console.log(tasks.title)
                 // < div class="card" >
                 //     <div class="card-body">
                 //         This is some text within a card body.
