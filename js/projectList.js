@@ -21,9 +21,27 @@ async function getProjects() {
       const block = document.createElement("li");
       block.setAttribute("id", project.id);
       //étendre la zone de li tout le bloc 
-      block.classList.add("stretched-link")
+    //   block.classList.add("stretched-link")
       block.classList.add("list-group-item");
       block.classList.add("list-group-item-action");
+      const cdr = document.createElement("div");
+      cdr.classList.add("ms-2","me-auto");
+      const contenu= document.createElement("div");
+      contenu.classList.add("fw-bold");
+      contenu.innerText = project.title
+      const iconDelete = document.createElement('span')
+      iconDelete.classList.add("badge","bg-primary","rounded-pill");
+      const icon = document.createElement('i')
+      icon.classList.add("bi", "bi-trash-fill")
+      iconDelete.appendChild(icon)
+      cdr.appendChild (contenu)
+      cdr.appendChild(iconDelete)
+      block.appendChild(cdr)
+      cdr.appendChild(copilH5)
+      iconDelete.addEventListener('click', function(evt) {
+        evt.stopPropagation()
+        console.log(evt.target.parentElement.parentElement.parentElement.getAttribute('id'))
+      })
 
       projectListEl.appendChild(block);
 
@@ -36,11 +54,11 @@ async function getProjects() {
             );
         });
         
-        const h3 = document.createElement("h3");
-        h3.innerText = project.title;
-        block.appendChild(h3);
+        // const h3 = document.createElement("h3");
+        // // h3.innerText = project.title;
+        // block.appendChild(h3);
      
-
+        //boucler la liste de utilisateurs 
       for (let copil of project.copil_list) {
         const copilBlock = document.createElement("div");
         const copilH5 = document.createElement("h5");
@@ -48,6 +66,7 @@ async function getProjects() {
         copilBlock.appendChild(copilH5);
         block.appendChild(copilBlock);
       }
+    
     }
   } catch (e) {
     throw e;
