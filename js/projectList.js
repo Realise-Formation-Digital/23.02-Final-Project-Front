@@ -47,6 +47,7 @@ async function getProjects() {
               copilBlock.appendChild(copilH5);
               block.appendChild(copilBlock);
             }
+            
           
 
             // const img = document.createElement("img");
