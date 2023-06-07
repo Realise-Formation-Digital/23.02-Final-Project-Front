@@ -1,137 +1,112 @@
-import {API_BASE_URL} from "../constants/constants.js";
+import { API_BASE_URL } from "../constants/constants.js";
 
+let usersGlobalList = null
 // datepicker with months instead days
-$("#creationDate").datepicker( {
-    format: "dd/mm/yyyy",
-    viewMode: "months",
-    minViewMode: "months"
-});
+// $("#creationDate").datepicker( {
+//     format: "dd/mm/yyyy",
+//     viewMode: "months",
+//     minViewMode: "months"
+// });
 
-async function sendBeer() {
-    try {
-        // get values from form
-        const form = document.getElementById("sendBeerForm")
-        let name = form.elements['name'].value;
-        let tagline = form.elements['tagline'].value;
-        let firstBrewed = form.elements['creationDate'].value;
-        let description = form.elements['description'].value;
-        let imageUrl = form.elements['imageUrl'].value;
-        let brewersTips = form.elements['brewersTips'].value;
-        let contributedBy = form.elements['contributedBy'].value;
-        let foodPairing1 = form.elements['foodPairing1'].value;
-        let foodPairing2 = form.elements['foodPairing2'].value;
-        let foodPairing3 = form.elements['foodPairing3'].value;
+async function getUsers() {
+  try {
+    const response = await axios.get(API_BASE_URL + "users");
+    const usersList = response.data;
+    //console.log(users)
+    //return users
+    //const usersHTML = users.map((user) => `<li>${user}</li>`).join("");
 
-        // construct jsonBody
-        let jsonBody = {
-            "name": name,
-            "tagline": tagline,
-            "first_brewed": firstBrewed,
-            "description": description,
-            "image_url": imageUrl,
-            "food_pairing":[
-                foodPairing1,
-                foodPairing2,
-                foodPairing3
-            ],
-            "brewers_tips": brewersTips,
-            "contributed_by": contributedBy
-        }
+    //const dropdownMenu = document.querySelector(".dropdown-menu");
+    //dropdownMenu.innerHTML = usersHTML;
 
-        // get id param
-        const queryString = window.location.search;
-        const urlParams = new URLSearchParams(queryString);
-        const id = urlParams.get("id");
-
-        //if id, update beer
-        if (id) {
-            return await axios.put(
-                API_BASE_URL + "beers/" + id,
-                jsonBody
-            )
-        // if no id, add beer
-        } else {
-            return await axios.post(
-                API_BASE_URL + "beers",
-                jsonBody
-            )
-        }
-
-    } catch (e) {
-        console.error(e);
-        throw e;
+    const selectElement = document.getElementById('select-users')
+    for(let user of usersList){
+        const optionEl = document.createElement('option')
+        optionEl.setAttribute('value', user.id)
+        optionEl.innerText = user.first_name + " " + user.last_name
+        selectElement.appendChild(optionEl)
     }
+
+
+
+
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
 }
 
-//when click on submit beer
-document.getElementById("submitProject").addEventListener("click", () => {
-    sendBeer().then(beer => {
+await getUsers()
 
-            //remove error message
-            const errorElement = document.getElementById("errorMessage");
-            errorElement.innerHTML = '';
+async function createProject() {
+  try {
+    // get values from form
+    const form = document.getElementById("newProject");
+    let title = form.elements["title"].value;
+    let pilot = form.elements["pilot"].value;
 
-            //add success message
-            const successMessageEl = document.createElement("div");
-            successMessageEl.innerHTML = "Le projet a bien été ajouté.";
-            successMessageEl.classList.add("alert");
-            successMessageEl.classList.add("alert-success");
-            successMessageEl.innerText = `Le projet ${beer.data.name} a bien été ajoutée.`;
-            const successElement = document.getElementById("successMessage");
-            successElement.innerHTML = '';
-            successElement.appendChild(successMessageEl);
+    // construct jsonBody
+    let jsonBody = {
+      title: title,
+      copil: [copil1],
+    };
 
-            //empty inputs when success
-            const form = document.getElementById("sendBeerForm");
-            Array.from(form.elements).forEach((element) => {
-                element.value = "";
-            });
-        }
-    ).catch(e => {
-            //remove success message
-            const successElement = document.getElementById("successMessage");
-            successElement.innerHTML = "";
-
-            //add error message
-            const error = document.createElement("div");
-            error.classList.add("alert");
-            error.classList.add("alert-danger");
-            error.innerText = e.response.data.message;
-            const errorElement = document.getElementById("errorMessage");
-            errorElement.innerHTML = '';
-            errorElement.appendChild(error);
-        }
-    );
-});
-
-// when DOM loaded
-document.addEventListener("DOMContentLoaded", async function () {
+    // get id param
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
     const id = urlParams.get("id");
-    const titleEl = document.getElementById("title");
 
-    // if id, put values from beer in inputs
-    if (id) {
-        let response = await axios.get(API_BASE_URL + 'beers/' + id);
-        let beer = response.data;
-        const form = document.getElementById("sendBeerForm")
-        form.elements['name'].value = beer.name;
-        form.elements['tagline'].value = beer.tagline;
-        form.elements['firstBrewed'].value = beer.first_brewed;
-        form.elements['description'].value = beer.description;
-        form.elements['imageUrl'].value = beer.image_url;
-        form.elements['brewersTips'].value = beer.brewers_tips;
-        form.elements['contributedBy'].value = beer.contributed_by;
-        form.elements['foodPairing1'].value = beer.food_pairing[0];
-        form.elements['foodPairing2'].value = beer.food_pairing[1];
-        form.elements['foodPairing3'].value = beer.food_pairing[2];
+    //post project
+    return await axios.post(API_BASE_URL + "projects", jsonBody);
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+}
 
-        // add update beer title
-        titleEl.innerHTML = `Mettre à jour le projet ${beer.name}`;
-    } else {
+//
+document.getElementById("newProject").addEventListener("click", () => {
+  const myModal = new bootstrap.Modal(
+    document.getElementById("new-project-modal"),
+    {}
+  );
+  myModal.show();
 
-        // add add beer title
-        titleEl.innerHTML = "Ajouter un projet";
-    }
+  // createProject().then(project => {
+
+  //         //remove error message
+  //         const errorElement = document.getElementById("errorMessage");
+  //         errorElement.innerHTML = '';
+
+  //         //add success message
+  //         const successMessageEl = document.createElement("div");
+  //         successMessageEl.innerHTML = "Le projet a bien été ajouté.";
+  //         successMessageEl.classList.add("alert");
+  //         successMessageEl.classList.add("alert-success");
+  //         successMessageEl.innerText = `Le projet ${project.title} a bien été ajoutée.`;
+  //         const successElement = document.getElementById("successMessage");
+  //         successElement.innerHTML = '';
+  //         successElement.appendChild(successMessageEl);
+
+  //         //empty inputs when success
+  //         const form = document.getElementById("newProject");
+  //         Array.from(form.elements).forEach((element) => {
+  //             element.value = "";
+  //         });
+  //     }
+  // ).catch(e => {
+  //         //remove success message
+  //         const successElement = document.getElementById("successMessage");
+  //         successElement.innerHTML = "";
+
+  //         //add error message
+  //         const error = document.createElement("div");
+  //         error.classList.add("alert");
+  //         error.classList.add("alert-danger");
+  //         error.innerText = e.response.data.message;
+  //         const errorElement = document.getElementById("errorMessage");
+  //         errorElement.innerHTML = '';
+  //         errorElement.appendChild(error);
+  //     }
+  // );
 });
