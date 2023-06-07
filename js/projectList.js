@@ -25,15 +25,19 @@ async function getProjects() {
         projectListEl.innerHTML = "";
 
 
+
         // add pagination elements
         //paginationEl();
         //paginationProjectsListener();
 
         for (let project of projectList) {
+            const containerLiProject = document.createElement("div");
+            
             const block = document.createElement("li");
             block.setAttribute('id', project.id);
             block.classList.add("list-group-item");
             block.classList.add('list-group-item-action');
+            block.classList.add("align-items")
             projectListEl.appendChild(block);
           
             const h3 = document.createElement("h3");
@@ -47,7 +51,7 @@ async function getProjects() {
               copilBlock.appendChild(copilH5);
               block.appendChild(copilBlock);
             }
-            
+
           
 
             // const img = document.createElement("img");
