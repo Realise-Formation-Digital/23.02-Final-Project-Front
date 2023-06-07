@@ -3,6 +3,15 @@ import { API_BASE_URL } from "../constants/constants.js";
 
 async function getTasks() {
   try {
+    //début création element titre
+    let projectTitle = document.getElementById('titleprojet')
+    projectTitle.innerHTML = ``
+    
+    
+    // <div class="col-mb-8 text-center">
+    //       <h1>lala</h1>
+    //     </div>
+
     //ouvrir le lien dans une nouvelle fenêtre
     const queryString = window.location.search;
     //réccupérer le paramettre de l'URL
@@ -14,6 +23,11 @@ async function getTasks() {
     const reponse = await axios.get(API_BASE_URL + "projects/" + kanban_id);
 
     const kanban = reponse.data;
+    
+    
+    //début création element titre
+    let projectTitleId = document.getElementById('titleprojet')
+    projectTitleId.innerHTML = `<h1>${kanban.title}</h1>`
     //attacher un element dans le Kanban.html
     let row = document.querySelector("#row");
 
