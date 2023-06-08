@@ -1,137 +1,95 @@
-import {API_BASE_URL} from "../constants/constants.js";
-
-// datepicker with months instead days
-$("#creationDate").datepicker( {
-    format: "dd/mm/yyyy",
-    viewMode: "months",
-    minViewMode: "months"
-});
-
-async function sendBeer() {
-    try {
-        // get values from form
-        const form = document.getElementById("sendBeerForm")
-        let name = form.elements['name'].value;
-        let tagline = form.elements['tagline'].value;
-        let firstBrewed = form.elements['creationDate'].value;
-        let description = form.elements['description'].value;
-        let imageUrl = form.elements['imageUrl'].value;
-        let brewersTips = form.elements['brewersTips'].value;
-        let contributedBy = form.elements['contributedBy'].value;
-        let foodPairing1 = form.elements['foodPairing1'].value;
-        let foodPairing2 = form.elements['foodPairing2'].value;
-        let foodPairing3 = form.elements['foodPairing3'].value;
-
-        // construct jsonBody
-        let jsonBody = {
-            "name": name,
-            "tagline": tagline,
-            "first_brewed": firstBrewed,
-            "description": description,
-            "image_url": imageUrl,
-            "food_pairing":[
-                foodPairing1,
-                foodPairing2,
-                foodPairing3
-            ],
-            "brewers_tips": brewersTips,
-            "contributed_by": contributedBy
-        }
-
-        // get id param
-        const queryString = window.location.search;
-        const urlParams = new URLSearchParams(queryString);
-        const id = urlParams.get("id");
-
-        //if id, update beer
-        if (id) {
-            return await axios.put(
-                API_BASE_URL + "beers/" + id,
-                jsonBody
-            )
-        // if no id, add beer
-        } else {
-            return await axios.post(
-                API_BASE_URL + "beers",
-                jsonBody
-            )
-        }
-
-    } catch (e) {
-        console.error(e);
-        throw e;
+import { API_BASE_URL } from "../constants/constants.js";
+//Création de la liste des utilisateurs et initialisation vide 
+let usersGlobalList = null;
+/**
+ * Création de la function vérifier pour venir recup le statut de nos check box
+ * 
+ */
+function verfierUser() {
+  let checkedUser = [];
+  const checked = document.querySelectorAll(".daniel");
+  for (let i of checked) {
+    if (i.checked === true) {
+      checkedUser.push(i.id);
     }
+  }
+}
+//création de la function 
+async function getUsers() {
+  try {
+    const response = await axios.get(API_BASE_URL + "users");
+    const usersList = response.data;
+    const ulElement = document.getElementById("lista");
+    let idTabUser = [];
+    console.log(idTabUser);
+
+    for (let user of usersList) {
+      const liCheck = document.createElement("li");
+      const optionEl = document.createElement("label");
+      const checkBox = document.createElement("input");
+
+      //perso li
+      liCheck.classList.add("list-group-item");
+
+      //perso input
+      checkBox.classList.add("form-check-input", "me-1", "mx-3");
+      checkBox.classList.add("daniel");
+      checkBox.setAttribute("type", "checkbox");
+      checkBox.setAttribute("id", user.id);
+
+      //perso label
+      optionEl.classList.add("form-check-label", "stretched-link");
+      optionEl.setAttribute("for", user.id);
+      optionEl.innerText = user.first_name + " " + user.last_name;
+      idTabUser.push(user.id);
+      liCheck.appendChild(checkBox);
+      liCheck.appendChild(optionEl);
+      ulElement.appendChild(liCheck);
+    }
+    //recupération du btn
+    const btnValidation = document.getElementById("valid");
+    btnValidation.addEventListener("click", verfierUser);
+    console.log(btnValidation);
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
 }
 
-//when click on submit beer
-document.getElementById("submitProject").addEventListener("click", () => {
-    sendBeer().then(beer => {
+await getUsers();
 
-            //remove error message
-            const errorElement = document.getElementById("errorMessage");
-            errorElement.innerHTML = '';
+async function createProject() {
+  try {
+    // get values from form
+    const form = document.getElementById("newProject");
+    let title = form.elements["title"].value;
+    let pilot = form.elements["pilot"].value;
 
-            //add success message
-            const successMessageEl = document.createElement("div");
-            successMessageEl.innerHTML = "Le projet a bien été ajouté.";
-            successMessageEl.classList.add("alert");
-            successMessageEl.classList.add("alert-success");
-            successMessageEl.innerText = `Le projet ${beer.data.name} a bien été ajoutée.`;
-            const successElement = document.getElementById("successMessage");
-            successElement.innerHTML = '';
-            successElement.appendChild(successMessageEl);
+    // construct jsonBody
+    let jsonBody = {
+      title: title,
+      copil: [copil1],
+    };
 
-            //empty inputs when success
-            const form = document.getElementById("sendBeerForm");
-            Array.from(form.elements).forEach((element) => {
-                element.value = "";
-            });
-        }
-    ).catch(e => {
-            //remove success message
-            const successElement = document.getElementById("successMessage");
-            successElement.innerHTML = "";
-
-            //add error message
-            const error = document.createElement("div");
-            error.classList.add("alert");
-            error.classList.add("alert-danger");
-            error.innerText = e.response.data.message;
-            const errorElement = document.getElementById("errorMessage");
-            errorElement.innerHTML = '';
-            errorElement.appendChild(error);
-        }
-    );
-});
-
-// when DOM loaded
-document.addEventListener("DOMContentLoaded", async function () {
+    // get id param
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
     const id = urlParams.get("id");
-    const titleEl = document.getElementById("title");
 
-    // if id, put values from beer in inputs
-    if (id) {
-        let response = await axios.get(API_BASE_URL + 'beers/' + id);
-        let beer = response.data;
-        const form = document.getElementById("sendBeerForm")
-        form.elements['name'].value = beer.name;
-        form.elements['tagline'].value = beer.tagline;
-        form.elements['firstBrewed'].value = beer.first_brewed;
-        form.elements['description'].value = beer.description;
-        form.elements['imageUrl'].value = beer.image_url;
-        form.elements['brewersTips'].value = beer.brewers_tips;
-        form.elements['contributedBy'].value = beer.contributed_by;
-        form.elements['foodPairing1'].value = beer.food_pairing[0];
-        form.elements['foodPairing2'].value = beer.food_pairing[1];
-        form.elements['foodPairing3'].value = beer.food_pairing[2];
+    //post project
+    return await axios.post(API_BASE_URL + "projects", jsonBody);
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+}
 
-        // add update beer title
-        titleEl.innerHTML = `Mettre à jour le projet ${beer.name}`;
-    } else {
 
-        // add add beer title
-        titleEl.innerHTML = "Ajouter un projet";
-    }
+//Ajouter un listener sur le bouton de l'ajout d'un projet
+document.getElementById("newProject").addEventListener("click", () => {
+  const myModal = new bootstrap.Modal(
+    document.getElementById("new-project-modal"),
+    {}
+  );
+  myModal.show();
 });
