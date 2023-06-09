@@ -37,7 +37,8 @@ async function getTasks() {
         "border-dark",
         "h-25",
         "d-inline-block",
-        "min-vh-100"
+        "min-vh-100",
+        "px-0"
       );
 
       // add id to col
@@ -45,6 +46,7 @@ async function getTasks() {
 
       //définir l'element h4 comme titre de la colonne
       let h4 = document.createElement("h4");
+      h4.classList.add('text-center',"border-bottom","border-dark")
       h4.innerText = column.title;
 
       // append Elements
@@ -75,13 +77,16 @@ async function getTasks() {
         let cardDiv = document.createElement("div");
         let cardBodyDiv = document.createElement("div");
         let titleCard = document.createElement("h5");
+        let imgElement = document.createElement('img')
 
+        imgElement.src = "./Photos/bin2.png"
+        imgElement.classList.add("h-50", "me-3", "position-absolute", "top-50", "end-0", "translate-middle-y")
         // Custom Card 
-        cardDiv.classList.add("card");
+        cardDiv.classList.add("card","my-3","mx-3");
         cardDiv.setAttribute("id", task.id);
 
         //  Custom body card
-        cardBodyDiv.classList.add("card-body");
+        cardBodyDiv.classList.add("card-body", "position-relative");
 
         //  Custom title
         titleCard.classList.add = "p-5";
@@ -91,6 +96,7 @@ async function getTasks() {
 
         // append elements
         cardBodyDiv.appendChild(titleCard);
+        cardBodyDiv.appendChild(imgElement)
         cardDiv.appendChild(cardBodyDiv);
         col.appendChild(cardDiv);
       }
