@@ -46,7 +46,7 @@ async function getTasks() {
 
       //définir l'element h4 comme titre de la colonne
       let h4 = document.createElement("h4");
-      h4.classList.add('text-center',"border-bottom","border-dark")
+      h4.classList.add('text-center',"border-bottom","border-dark", "py-2")
       h4.innerText = column.title;
 
       // append Elements
@@ -82,7 +82,7 @@ async function getTasks() {
         imgElement.src = "./Photos/bin2.png"
         imgElement.classList.add("h-50", "me-3", "position-absolute", "top-50", "end-0", "translate-middle-y")
         // Custom Card 
-        cardDiv.classList.add("card","my-3","mx-3");
+        cardDiv.classList.add("card","my-3","mx-3","shadow-sm");
         cardDiv.setAttribute("id", task.id);
 
         //  Custom body card
