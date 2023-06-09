@@ -70,23 +70,20 @@ async function getTasks() {
 
       //boucle pour venir récupérer chaque tâches
       for (let task of column.tasks) {
-        //creation de la carte
+      
+        // Elements creation
         let cardDiv = document.createElement("div");
-
-        //creation body Card
         let cardBodyDiv = document.createElement("div");
-
-        //creation element h5
         let titleCard = document.createElement("h5");
 
-        //assignation de la classe cardDiv
+        // Custom Card 
         cardDiv.classList.add("card");
         cardDiv.setAttribute("id", task.id);
 
-        //assignation de la classe body card
+        //  Custom body card
         cardBodyDiv.classList.add("card-body");
 
-        //assignation de la classe title
+        //  Custom title
         titleCard.classList.add = "p-5";
 
         // text injection
