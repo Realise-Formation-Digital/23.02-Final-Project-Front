@@ -1,6 +1,11 @@
 //importation de notre url
 import { API_BASE_URL } from "../constants/constants.js";
 
+// appele modal
+const myModalAlternative = new bootstrap.Modal('#modalList')
+
+//  variable contenant l'identifiant de l'élément à supprimer
+let idTaskDelete
 async function getTasks() {
   try {
     //ouvrir le lien dans une nouvelle fenêtre
@@ -46,7 +51,7 @@ async function getTasks() {
 
       //définir l'element h4 comme titre de la colonne
       let h4 = document.createElement("h4");
-      h4.classList.add('text-center',"border-bottom","border-dark", "py-2")
+      h4.classList.add("text-center", "border-bottom", "border-dark", "py-2");
       h4.innerText = column.title;
 
       // append Elements
@@ -61,28 +66,34 @@ async function getTasks() {
         draggable: ".card",
 
         onEnd: function (evt) {
-          dragingElementId = evt.item.id; 
+          dragingElementId = evt.item.id;
           // console.log("ID card element: ", dragingElementId);
           targetElementId = evt.to.id;
           // console.log("ID target element: ", targetElementId);
-          patchTask()
+          patchTask();
         },
-
       });
-
+      
+      let imgElement;
       //boucle pour venir récupérer chaque tâches
       for (let task of column.tasks) {
-      
         // Elements creation
         let cardDiv = document.createElement("div");
         let cardBodyDiv = document.createElement("div");
         let titleCard = document.createElement("h5");
-        let imgElement = document.createElement('img')
+        imgElement = document.createElement("img");
 
-        imgElement.src = "./Photos/bin2.png"
-        imgElement.classList.add("h-50", "me-3", "position-absolute", "top-50", "end-0", "translate-middle-y")
-        // Custom Card 
-        cardDiv.classList.add("card","my-3","mx-3","shadow-sm");
+        imgElement.src = "./Photos/red-bin.png";
+        imgElement.classList.add(
+          "h-50",
+          "me-3",
+          "position-absolute",
+          "top-50",
+          "end-0",
+          "translate-middle-y"
+        );
+        // Custom Card
+        cardDiv.classList.add("card", "my-3", "mx-3", "shadow-sm");
         cardDiv.setAttribute("id", task.id);
 
         //  Custom body card
@@ -96,38 +107,107 @@ async function getTasks() {
 
         // append elements
         cardBodyDiv.appendChild(titleCard);
-        cardBodyDiv.appendChild(imgElement)
+        cardBodyDiv.appendChild(imgElement);
         cardDiv.appendChild(cardBodyDiv);
         col.appendChild(cardDiv);
+
+        // attente d'un clic pour supprimer une tâche
+        imgElement.addEventListener('click', (evt) => {
+          evt.stopPropagation()
+          idTaskDelete = evt.target.parentElement.parentElement.getAttribute('id')
+          console.log(idTaskDelete);
+
+         
+          const titleSpanElement = document.querySelector('#titleSpan')
+          titleSpanElement.innerText = task.title
+          myModalAlternative.show()
+          // const foundCharacter = task.find((ch) => ch.id === parseInt(evt.target.id))
+          // // console.log(evt.target.id)
+          // const name = document.getElementById('nameCh')
+          // const title = document.getElementById('titleCh')
+          // name.innerText = foundCharacter.fullName
+          // title.innerText = foundCharacter.title
+        })
+        
+        const btnConfirm = document.querySelector('#btnConfirm')
+        btnConfirm.addEventListener('click', deleteTask)
+
+        // imgElement.addEventListener("click", deleteTask)
+
       }
     }
   } catch (e) {
     alert("Erreur de serveur, merci de réessayer plus tard");
   }
+      
+      
 }
-
-
 
 let dragingElementId = null;
 let targetElementId = null;
-
-
+/**
+ * Fonction patch. Envoi d'une raquette à la base de données concernant new_status_column_id
+ * 
+ */
 async function patchTask() {
   try {
+    const reponsePatch = await axios.patch(
+      API_BASE_URL + "tasks/" + dragingElementId,
+      {
+        new_status_column_id: targetElementId,
+      }
+    );
 
-   
-    const reponsePatch = await axios.patch(API_BASE_URL + "tasks/" + dragingElementId, {
-      'new_status_column_id' : targetElementId,
-  
-      
-    })
-    
     console.log(reponsePatch);
-  }catch(error) {
+  } catch (error) {
     console.error(error);
-  };
-  
-  
+  }
 }
+
+ async function deleteTask(evt) {
+    evt.stopPropagation();
+    let responseDelete = null;
+    
+
+    try {
+      //envoyer la requette DELETE au serveur via l'URL et l'id du Kanban
+      responseDelete = await axios.delete(
+        API_BASE_URL + "projects/" + idTaskDelete
+      );
+    } catch (err) {
+      throw err;
+    }
+    console.log(responseDelete);
+
+
+    // message success
+    if (responseDelete.status === 200) {
+      // alert("Votre tàche" + ` ${idTaskDelete} ` + "a été retiré de la liste");
+      
+       function insertAfter(referenceNode, newNode) {
+         referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+       }
+        const messageDivElement = document.createElement('div')
+        messageDivElement.classList.add(
+          "alert",
+          "alert-success"
+        )
+        messageDivElement.setAttribute("role", "alert")
+        messageDivElement.innerText = "Votre tàche" + ` ${idTaskDelete} ` + "a été retiré de la liste"
+
+        const divTitleKanban = document.getElementById("titleprojet")
+        insertAfter(divTitleKanban, messageDivElement);
+        myModalAlternative.hide();
+        
+        // setTimeout(messageDivElement.remove(),  6000)
+        // do poprawy zeby odswiezalo liste zadan
+        getTasks()
+        // setTimeout(location.reload(),1000)
+    
+     
+    } else {
+      alert("Quelque chose s'est mal passé");
+    }
+  };
 
 await getTasks();
