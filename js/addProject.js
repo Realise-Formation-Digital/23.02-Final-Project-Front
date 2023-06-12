@@ -10,9 +10,11 @@ function verfierUser() {
   const checked = document.querySelectorAll(".daniel");
   for (let i of checked) {
     if (i.checked === true) {
-      checkedUser.push(i.id);
+      checkedUser.push(i.id);  
     }
   }
+
+  return checkedUser
 }
 //création de la function 
 async function getUsers() {
@@ -21,7 +23,6 @@ async function getUsers() {
     const usersList = response.data;
     const ulElement = document.getElementById("lista");
     let idTabUser = [];
-    console.log(idTabUser);
 
     for (let user of usersList) {
       const liCheck = document.createElement("li");
@@ -48,48 +49,63 @@ async function getUsers() {
     }
     //recupération du btn
     const btnValidation = document.getElementById("valid");
-    btnValidation.addEventListener("click", verfierUser);
-    console.log(btnValidation);
+    btnValidation.addEventListener("click", createProject);
+
+    return response
   } catch (e) {
     console.error(e);
     throw e;
   }
 }
-
-await getUsers();
 
 async function createProject() {
   try {
     // get values from form
-    const form = document.getElementById("newProject");
-    let title = form.elements["title"].value;
-    let pilot = form.elements["pilot"].value;
+    let verifiedUsers = verfierUser()
+    let title = document.getElementById('project-title')
+    
 
     // construct jsonBody
     let jsonBody = {
-      title: title,
-      copil: [copil1],
+      title: title.value,
+      copil_list: verifiedUsers
     };
 
     // get id param
-    const queryString = window.location.search;
-    const urlParams = new URLSearchParams(queryString);
-    const id = urlParams.get("id");
+    // const queryString = window.location.search;
+    // const urlParams = new URLSearchParams(queryString);
+    // const id = urlParams.get("id");
 
+
+    console.log(API_BASE_URL + "projects", jsonBody)
     //post project
-    return await axios.post(API_BASE_URL + "projects", jsonBody);
+    await axios.post(API_BASE_URL + "projects", jsonBody)
+    location.reload()
   } catch (e) {
     console.error(e);
     throw e;
   }
 }
 
+  //create uncheckall function
+function uncheckAll() {
+  var inputs = document.querySelectorAll('.daniel');
+  for (var i = 0; i < inputs.length; i++) {
+      inputs[i].checked = false;
+  }
+}
 
 //Ajouter un listener sur le bouton de l'ajout d'un projet
 document.getElementById("newProject").addEventListener("click", () => {
+  uncheckAll();
   const myModal = new bootstrap.Modal(
     document.getElementById("new-project-modal"),
     {}
   );
   myModal.show();
+  let users = getUsers()
+  let title = document.getElementById('project-title')
+
+  title.value = ""
+  
 });

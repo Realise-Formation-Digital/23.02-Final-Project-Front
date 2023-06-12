@@ -68,6 +68,9 @@ async function getProjects() {
       evt.stopPropagation()
       let responseDelete = null
       let idProjectDelete = evt.target.parentElement.parentElement.getAttribute('id')
+      console.log(idProjectDelete)
+      if (idProjectDelete === "projectList") idProjectDelete = evt.target.parentElement.getAttribute('id')
+      console.log(idProjectDelete)
       try {
         //envoyer la requette au serveur via l'URL et l'id du Kanban
         responseDelete = await axios.delete(API_BASE_URL + "projects/" + idProjectDelete);
