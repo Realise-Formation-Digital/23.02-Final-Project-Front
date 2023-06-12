@@ -52,10 +52,10 @@ async function getProjects() {
       ${listCopil}`
 
     // Custom span element
-    contentBlockElementSpan.classList.add("badge", "bg-primary", "rounded-pill");
+    contentBlockElementSpan.classList.add("badge", "bg-danger", "rounded-pill");
 
     // Custom icon element
-    iconElement.classList.add("bi", "bi-trash-fill", "danger")
+    iconElement.classList.add("bi", "bi-trash-fill")
 
     // Attach Icon -> Span
     contentBlockElementSpan.appendChild(iconElement)
