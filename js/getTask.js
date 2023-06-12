@@ -183,31 +183,59 @@ async function patchTask() {
     // message success
     if (responseDelete.status === 200) {
       // alert("Votre tàche" + ` ${idTaskDelete} ` + "a été retiré de la liste");
-      
-       function insertAfter(referenceNode, newNode) {
-         referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
-       }
-        const messageDivElement = document.createElement('div')
+
+      const alert = document.getElementById('alert-box')
+      const messageDivElement = document.createElement('div')
+      console.log(alert)
+
+      if(alert === null){
         messageDivElement.classList.add(
           "alert",
           "alert-success"
         )
         messageDivElement.setAttribute("role", "alert")
+        messageDivElement.setAttribute("id", "alert-box")
         messageDivElement.innerText = "Votre tàche" + ` ${idTaskDelete} ` + "a été retiré de la liste"
+      }else {
+        removeDiv(alert)
+        messageDivElement.classList.add(
+          "alert",
+          "alert-success"
+        )
+        messageDivElement.setAttribute("role", "alert")
+        messageDivElement.setAttribute("id", "alert-box")
+        messageDivElement.innerText = "Votre tàche" + ` ${idTaskDelete} ` + "a été retiré de la liste"
+      }
+
+        function insertAfter(referenceNode, newNode) {
+          referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+        }
 
         const divTitleKanban = document.getElementById("titleprojet")
         insertAfter(divTitleKanban, messageDivElement);
         myModalAlternative.hide();
+
+        removeChild(row)
+
+        getTasks();
         
-        // setTimeout(messageDivElement.remove(),  6000)
-        // do poprawy zeby odswiezalo liste zadan
-        getTasks()
-        // setTimeout(location.reload(),1000)
-    
+
      
-    } else {
-      alert("Quelque chose s'est mal passé");
+        
+      } else {
+        alert("Quelque chose s'est mal passé");
+      }
+      
+    };
+
+    function removeDiv(div){
+      div.remove()
     }
-  };
+    
+    function removeChild(div){
+      while (div.firstChild) {
+        div.removeChild(div.firstChild);
+      }
+  }
 
 await getTasks();
