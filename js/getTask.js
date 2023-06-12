@@ -1,11 +1,116 @@
 //importation de notre url
-import { API_BASE_URL } from "../constants/constants.js";
+import { API_BASE_URL, SECTOR} from "../constants/constants.js";
 
 // appele modal
 const myModalAlternative = new bootstrap.Modal('#modalList')
 
 //  variable contenant l'identifiant de l'élément à supprimer
 let idTaskDelete
+
+async function createTaskModal(){
+  try{
+    const titleTask = document.getElementById("task-title")
+    const startDateTask = document.getElementById("task-start-date")
+    const endDateTask = document.getElementById("task-end-date")
+    const descTask = document.getElementById("task-description")
+    const pilotTask = document.getElementById("assigned-to")
+    const sectTask = document.getElementById("sector")
+
+    titleTask.value = ""
+
+    let date = new Date()
+    let mm = date.getMonth() + 1; // getMonth() is zero-based
+    let dd = date.getDate();
+
+    if(mm>9){
+      mm = mm
+    } else{
+      mm = "0" + mm
+    }
+
+    if(dd>9){
+      dd = dd
+    } else{
+      dd = "0" + dd
+    }
+
+    let today = date.getFullYear() + "-" + mm + "-" + dd
+
+    startDateTask.value = today
+
+    endDateTask.value = today
+
+    descTask.value = ""
+
+    //ouvrir le lien dans une nouvelle fenêtre
+    const queryString = window.location.search;
+
+    //réccupérer le paramettre de l'URL
+    const urlParams = new URLSearchParams(queryString);
+
+    //récupérer l'id du kanban  de l'URL
+    const kanban_id = urlParams.get("kanban_id");
+
+    //envoyer la requette au serveur via l'URL et l'id du Kanban
+    const project = await axios.get(API_BASE_URL + "projects/" + kanban_id);
+    const projectInfo = project.data;
+
+    let userOptions = projectInfo.copil_list
+
+    for(let i = 0; i < userOptions.length; i++) {
+      let opt = userOptions[i];
+      let el = document.createElement("option");
+      el.textContent = opt.last_name + " " + opt.first_name;
+      el.value = opt.id;
+      pilotTask.appendChild(el);
+    }
+
+    let sectorOptions = SECTOR
+
+    for(let i = 0; i < sectorOptions.length; i++) {
+      let opt = sectorOptions[i];
+      let el = document.createElement("option");
+      el.textContent = opt;
+      sectTask.appendChild(el);
+    }
+
+    //recupération du btn
+    const btnValidation = document.getElementById("valid-task");
+    btnValidation.addEventListener("click", async()=> await addTask(
+      kanban_id, titleTask.value, today, endDateTask.value, descTask.value, pilotTask.value, sectTask.value
+    ));
+
+
+  } catch (e) {
+    alert("Erreur de serveur, merci de réessayer plus tard");
+  }
+}
+
+async function addTask(id, title, startDate, endDate, description, pilot, sector){
+  //construct jsonBody
+    if(sector === "Selectionnez secteur"){
+      sector = null
+    }
+    if(id && title && description && pilot !== "Selectionnez pilote"){
+      let jsonBody = {
+        title: title,
+        description: description,
+        start_date: startDate,
+        end_date: endDate,
+        pilot: pilot,
+        sector: sector,
+        project_id: id
+      };
+
+      //post project
+      const responsePost = await axios.post(API_BASE_URL + "tasks", jsonBody)
+      location.reload()
+      await getTasks()
+    }else {
+      alert("veuillez remplir les champs nécessaires")
+    }
+}
+
 async function getTasks() {
   try {
     //ouvrir le lien dans une nouvelle fenêtre
@@ -52,7 +157,22 @@ async function getTasks() {
       //définir l'element h4 comme titre de la colonne
       let h4 = document.createElement("h4");
       h4.classList.add("text-center", "border-bottom", "border-dark", "py-2");
-      h4.innerText = column.title;
+
+      // CHANGEMENT DE LA TRAD DU TITRE DES COLONNES
+      switch(column.title){
+        case "toDo":
+          h4.innerText = "à faire"
+        break
+        case "inProgress":
+          h4.innerText = "en cours"
+        break
+        case "validated":
+          h4.innerText = "à valider"
+        break
+        case "done":
+          h4.innerText = "terminé"
+        break
+      }
 
       // append Elements
       col.appendChild(h4);
@@ -67,9 +187,7 @@ async function getTasks() {
 
         onEnd: function (evt) {
           dragingElementId = evt.item.id;
-          // console.log("ID card element: ", dragingElementId);
           targetElementId = evt.to.id;
-          // console.log("ID target element: ", targetElementId);
           patchTask();
         },
       });
@@ -115,18 +233,11 @@ async function getTasks() {
         imgElement.addEventListener('click', (evt) => {
           evt.stopPropagation()
           idTaskDelete = evt.target.parentElement.parentElement.getAttribute('id')
-          console.log(idTaskDelete);
 
          
           const titleSpanElement = document.querySelector('#titleSpan')
           titleSpanElement.innerText = task.title
           myModalAlternative.show()
-          // const foundCharacter = task.find((ch) => ch.id === parseInt(evt.target.id))
-          // // console.log(evt.target.id)
-          // const name = document.getElementById('nameCh')
-          // const title = document.getElementById('titleCh')
-          // name.innerText = foundCharacter.fullName
-          // title.innerText = foundCharacter.title
         })
         
         const btnConfirm = document.querySelector('#btnConfirm')
@@ -151,14 +262,14 @@ let targetElementId = null;
  */
 async function patchTask() {
   try {
+    console.log(dragingElementId)
+    console.log(targetElementId )
     const reponsePatch = await axios.patch(
       API_BASE_URL + "tasks/" + dragingElementId,
       {
-        new_status_column_id: targetElementId,
+        new_status_column_id: parseInt(targetElementId) 
       }
-    );
-
-    console.log(reponsePatch);
+      );
   } catch (error) {
     console.error(error);
   }
@@ -172,12 +283,11 @@ async function patchTask() {
     try {
       //envoyer la requette DELETE au serveur via l'URL et l'id du Kanban
       responseDelete = await axios.delete(
-        API_BASE_URL + "projects/" + idTaskDelete
+        API_BASE_URL + "tasks/" + idTaskDelete
       );
     } catch (err) {
       throw err;
     }
-    console.log(responseDelete);
 
 
     // message success
@@ -186,7 +296,6 @@ async function patchTask() {
 
       const alert = document.getElementById('alert-box')
       const messageDivElement = document.createElement('div')
-      console.log(alert)
 
       if(alert === null){
         messageDivElement.classList.add(
@@ -238,4 +347,22 @@ async function patchTask() {
       }
   }
 
+
 await getTasks();
+
+
+
+
+
+
+//Ajouter un listener sur le bouton de l'ajout d'un projet
+document.getElementById("add-task-btn").addEventListener("click", (evt) => {
+  evt.stopPropagation()
+  const myModal = new bootstrap.Modal(
+    document.getElementById("new-task-modal"),
+    {}
+  );
+  myModal.show();
+  createTaskModal();
+  
+});

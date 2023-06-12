@@ -38,7 +38,7 @@
     <div class="container">
       <div  class="row">
         <div class="col-mb-4">
-          <button class="btn btn-primary m-3 mt-5">+ Ajouter tàche</button>
+          <button id="add-task-btn" class="btn btn-primary m-3 mt-5">+ Ajouter tâche</button>
         </div>
         <div id="titleprojet" class="col-mb-8 text-center">
           
@@ -47,8 +47,58 @@
       <div id="row" class="row g-3 mt-3">
         
     </div>
+    <!-- MODAL ADD TASK -->
+    
+    <div class="modal" tabindex="-1" id="new-task-modal">
+      <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+          <div class="modal-header m-3">
+            <h5 class="modal-title">Creér Tâche</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body m-1">
+            <div class="row m-3">
+              <div class="col">
+                <span>Titre</span> <br>
+                <input type="text" id="task-title">
+              </div>
+              <div class="col">
+                <span>Date de début</span> <br>
+                <input type="date" id="task-start-date" disabled>
+              </div>
+              <div class="col">
+                <span>Date de fin</span> <br>
+                <input type="date" id="task-end-date">
+              </div>
+            </div>
+            <div class="row m-3">
+              <div class="col">
+                <span>Description</span> <br>
+                <input type="textarea" id="task-description">
+              </div>
+              <div class="col">
+                <span>Pilote</span> <br>
+                <select name="assigned-to" id="assigned-to">
+                  <option>Selectionnez pilote</option>
+                </select>
+              </div>
+              <div class="col">
+                <span>Secteur</span> <br>
+                <select name="sector" id="sector">
+                  <option>Selectionnez secteur</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer m-3">
+            <button id ="valid-task" type="button" class="btn btn-primary">Valider</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
-       <!-- Modal -->
+
+       <!-- Modal delete task -->
    <div class="modal fade" id="modalList" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
