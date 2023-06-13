@@ -263,6 +263,11 @@ async function addTask(
   pilot,
   sector
 ) {
+  let dateDebut = document.getElementById("task-start-date").value;
+  let dateFin = document.getElementById("task-end-date").value;
+  if(dateFin< dateDebut){
+    alert("La date de fin ne peux pas être antérieure à la date du début!!");
+  }
   if (sector === "Selectionnez secteur") {
     sector = null;
   }
