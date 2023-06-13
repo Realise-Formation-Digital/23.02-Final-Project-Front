@@ -28,6 +28,12 @@ async function getUsers() {
       const liCheck = document.createElement("li");
       const optionEl = document.createElement("label");
       const checkBox = document.createElement("input");
+      const contentBlockSpanImage = document.createElement('img');
+       //Custom img src element
+    contentBlockSpanImage.src= user.image
+    contentBlockSpanImage.alt = `${user.first_name} ${user.last_name}`;
+    contentBlockSpanImage.classList.add('rounded-circle','avatar-size');
+    liCheck.appendChild(contentBlockSpanImage);
 
       //perso li
       liCheck.classList.add("list-group-item");
