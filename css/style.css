@@ -14,3 +14,11 @@ background-size: cover;
 .logo {
   margin-left: 4%;
 }
+
+.avatar-size{
+  width: 40px;
+}
+
+.delete-size{
+  width: 50px;
+}
