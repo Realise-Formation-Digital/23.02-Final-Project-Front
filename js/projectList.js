@@ -18,22 +18,22 @@ async function getProjects() {
   const projectListText = response.data.toString("utf-8"); // Conversion en texte avec encodage UTF-8
   // Utilisez projectListText pour travailler avec les données texte si nécessaire
 
-  // let totalProjects = response.data.length;
-  let projectListEl = document.getElementById("projectList");
 
+  let projectListEl = document.getElementById("projectList");
+//boucle pour créer la liste des projets 
   for (let project of projectList) {
-    // Elements creation
+    // créations des elements HTML
     const liElement = document.createElement("li");
     const contentBlockElement = document.createElement("div");
-    const contentBlockElementTitle = document.createElement("div");
+    const contentBlockElementCopil = document.createElement("div");
     const contentBlockElementSpan = document.createElement('span')
     const iconElement = document.createElement('i')
     let listCopil = ""
 
-    // Custom LI Element
+    // personalisation de l'element li
     liElement.setAttribute("id", project.id); // set attribute ID
-    liElement.classList.add("list-group-item", "list-group-item-action", "d-flex", "justify-content-between", "align-items-start");
-
+    liElement.classList.add("list-group-item", "list-group-item-action", "d-flex", "justify-content-between", "align-items-center");
+// boucle pour ajouter des virgules à la liste des copiles 
     for (let i = 0; i < project.copil_list.length; i++) {
       // if (i === project.copil_list.length -1 ) {
       //   listCopil = listCopil.concat(project.copil_list[i].first_name + " " + project.copil_list[i].last_name)
@@ -45,32 +45,34 @@ async function getProjects() {
       i === project.copil_list.length - 1 ? listCopil = listCopil.concat(project.copil_list[i].first_name + " " + project.copil_list[i].last_name) : listCopil = listCopil.concat(project.copil_list[i].first_name + " " + project.copil_list[i].last_name + ", ")
     }
 
-    // Custom Content Block
-    contentBlockElement.classList.add("ms-2", "me-auto");
+    // personalisation du contentBlock
+    contentBlockElement.classList.add("ms-2", "me-auto", "align-items-center");
     contentBlockElement.innerHTML = `
       <div class="fw-bold">${project.title}</div>
-      ${listCopil}`
+     `
+// injection de la liste des coordonnées des copiles 
+    contentBlockElementCopil.innerText = listCopil
 
-    // Custom span element
+    // personalisation de l'element span 
     contentBlockElementSpan.classList.add("badge", "bg-danger", "rounded-pill");
 
-    // Custom icon element
+    // personalisation des icon
     iconElement.classList.add("bi", "bi-trash-fill")
 
-    // Attach Icon -> Span
+    // concaténation Icon -> Span
     contentBlockElementSpan.appendChild(iconElement)
 
-    // Attach Title --> Content
-    contentBlockElement.appendChild(contentBlockElementTitle)
+    // concaténation Title --> Content
+    contentBlockElement.appendChild(contentBlockElementCopil)
 
-    // Add event Listener to SPAN
+    //ajout de event Listener dans SPAN
     contentBlockElementSpan.addEventListener('click', async function (evt) {
       evt.stopPropagation()
       let responseDelete = null
       let idProjectDelete = evt.target.parentElement.parentElement.getAttribute('id')
-      console.log(idProjectDelete)
+    
       if (idProjectDelete === "projectList") idProjectDelete = evt.target.parentElement.getAttribute('id')
-      console.log(idProjectDelete)
+  
       try {
         //envoyer la requette au serveur via l'URL et l'id du Kanban
         responseDelete = await axios.delete(API_BASE_URL + "projects/" + idProjectDelete);
@@ -79,7 +81,7 @@ async function getProjects() {
       }
 
       if (responseDelete.status === 200) {
-        console.log(responseDelete.status)
+       
         alert("Votre projet a été retiré de la liste")
         setTimeout(location.reload(),1000);
  
@@ -94,11 +96,11 @@ async function getProjects() {
 
 
 
-    // Final Step --> Attach Block and span to li element
-    liElement.appendChild(contentBlockElement)
+    // concaténation des elements 
+        liElement.appendChild(contentBlockElement)
     liElement.appendChild(contentBlockElementSpan)
 
-    //Add event listener to LI
+    //ajoutd'un event listener dans LI
     liElement.addEventListener("click", function (evt) {
       let kanban_id = evt.target.parentElement.parentElement.getAttribute('id')
       if (!kanban_id) kanban_id = evt.target.getAttribute('id')
@@ -110,7 +112,7 @@ async function getProjects() {
       );
     });
 
-    // Final FINAL Step --> Attach li to ul
+    // concaténation du li dans ul
     projectListEl.appendChild(liElement);
   }
 
